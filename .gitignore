@@ -1,0 +1,24 @@
+# Dokumen rencana lokal, jangan di-push
+PLAN.md
+
+# Video, label, dan bobot model
+data/
+*.onnx
+*.pt
+*.pth
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+dist/
+
+# Lokal
+.env
+.env.*
+*.db
+*.sqlite
+.claude/settings.local.json
