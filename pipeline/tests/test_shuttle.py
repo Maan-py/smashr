@@ -1,6 +1,6 @@
 import pandas as pd
 
-from shuttle import MIN_STATIC_FRAMES, drop_static_points
+from shuttle import MIN_STATIC_FRAMES, detect_hits, drop_static_points
 
 
 def track(points):
@@ -29,6 +29,21 @@ def test_slow_drift_inside_radius_counts_as_static():
     drift = [(600 + i, 200) for i in range(MIN_STATIC_FRAMES)]
     result = drop_static_points(track(drift))
     assert result["Visibility"].eq(0).all()
+
+
+def test_sharp_turn_is_one_hit():
+    path = [(i * 20, 300) for i in range(20)] + [(380 - i * 20, 300) for i in range(1, 20)]
+    assert len(detect_hits(track(path))) == 1
+
+
+def test_straight_flight_has_no_hit():
+    assert detect_hits(track(moving(40))) == []
+
+
+def test_hidden_shuttle_has_no_hit():
+    path = track([(i * 20, 300) for i in range(20)] + [(380 - i * 20, 300) for i in range(1, 20)])
+    path.loc[17:22, "Visibility"] = 0
+    assert detect_hits(path) == []
 
 
 def test_input_is_not_modified():
